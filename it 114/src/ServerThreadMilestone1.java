@@ -3,15 +3,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ServerThreadPart5 extends Thread{
+public class ServerThreadMilestone1 extends Thread{
 	private Socket client;
 	private ObjectInputStream in;//from client
 	private ObjectOutputStream out;//to client
 	private boolean isRunning = false;
-	private SampleSocketServerPart5 server;//ref to our server so we can call methods on it
+	private ServerMilestone1 server;//ref to our server so we can call methods on it
 	//more easily
 	private String clientName = "Anon";
-	public ServerThreadPart5(Socket myClient, SampleSocketServerPart5 server) throws IOException {
+	public ServerThreadMilestone1(Socket myClient, ServerMilestone1 server) throws IOException {
 		this.client = myClient;
 		this.server = server;
 		isRunning = true;
@@ -25,8 +25,8 @@ public class ServerThreadPart5 extends Thread{
 		//broadcastConnected();
 	}
 	void broadcastConnected() {
-		PayloadPart5 payload = new PayloadPart5();
-		payload.setPayloadType(PayloadTypePart5.CONNECT);
+		PayloadMilestone1 payload = new PayloadMilestone1();
+		payload.setPayloadType(PayloadTypeMilestone1.CONNECT);
 		//note we don't need to specify message as it'll be handle by the server
 		//for this case
 		//we can send our name instead of id
@@ -35,15 +35,15 @@ public class ServerThreadPart5 extends Thread{
 	}
 	void broadcastDisconnected() {
 		//let everyone know we're here
-		PayloadPart5 payload = new PayloadPart5();
-		payload.setPayloadType(PayloadTypePart5.DISCONNECT);
+		PayloadMilestone1 payload = new PayloadMilestone1();
+		payload.setPayloadType(PayloadTypeMilestone1.DISCONNECT);
 		//note we don't need to specify message as it'll be handle by the server
 		//for this case
 		//we can send our name instead of id
 		//server.broadcast(payload, this.getId());
 		server.broadcast(payload, this.clientName);
 	}
-	public boolean send(PayloadPart5 payload) {
+	public boolean send(PayloadMilestone1 payload) {
 		try {
 			out.writeObject(payload);
 			return true;
@@ -58,8 +58,8 @@ public class ServerThreadPart5 extends Thread{
 	@Deprecated
 	public boolean send(String message) {
 		//added a boolean so we can see if the send was successful
-		PayloadPart5 payload = new PayloadPart5();
-		payload.setPayloadType(PayloadTypePart5.MESSAGE);
+		PayloadMilestone1 payload = new PayloadMilestone1();
+		payload.setPayloadType(PayloadTypeMilestone1.MESSAGE);
 		payload.setMessage(message);
 		return send(payload);
 	}
@@ -71,10 +71,10 @@ public class ServerThreadPart5 extends Thread{
 			//if we're using client name then we can comment this part out and use
 			//it only when we get a connect payload from our client
 			//broadcastConnected();
-			PayloadPart5 fromClient;
+			PayloadMilestone1 fromClient;
 			while(isRunning 
 					&& !client.isClosed()
-					&& (fromClient = (PayloadPart5)in.readObject()) != null) {//open while loop
+					&& (fromClient = (PayloadMilestone1)in.readObject()) != null) {//open while loop
 				processPayload(fromClient);
 			}//close while loop
 		}
@@ -90,7 +90,7 @@ public class ServerThreadPart5 extends Thread{
 			cleanup();
 		}
 	}
-	private void processPayload(PayloadPart5 payload) {
+	private void processPayload(PayloadMilestone1 payload) {
 		System.out.println("Received from client: " + payload);
 		switch(payload.getPayloadType()) {
 		case CONNECT:

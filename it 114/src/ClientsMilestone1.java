@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class SampleSocketClientPart5 {
+public class ClientsMilestone1 {
 	Socket server;
 	
 	public void connect(String address, int port) {
@@ -38,11 +38,11 @@ public class SampleSocketClientPart5 {
 			}
 			while(!server.isClosed() && name != null && name.length() == 0);
 			//we should have a name, let's tell our server
-			PayloadPart5 p = new PayloadPart5();
+			PayloadMilestone1 p = new PayloadMilestone1();
 			//we can also default payloadtype in payload
 			//to a desired value, though it's good to be clear
 			//what we're sending
-			p.setPayloadType(PayloadTypePart5.CONNECT);
+			p.setPayloadType(PayloadTypeMilestone1.CONNECT);
 			p.setMessage(name);
 			out.writeObject(p);
 			
@@ -57,19 +57,19 @@ public class SampleSocketClientPart5 {
 							String line = si.nextLine();
 							if(!"quit".equalsIgnoreCase(line) && line != null) {
 								//grab line and throw it into a payload object
-								PayloadPart5 p = new PayloadPart5();
+								PayloadMilestone1 p = new PayloadMilestone1();
 								//we can also default payloadtype in payload
 								//to a desired value, though it's good to be clear
 								//what we're sending
-								p.setPayloadType(PayloadTypePart5.MESSAGE);
+								p.setPayloadType(PayloadTypeMilestone1.MESSAGE);
 								p.setMessage(line);
 								out.writeObject(p);
 							}
 							else {
 								System.out.println("Stopping input thread");
 								//we're quitting so tell server we disconnected so it can broadcast
-								PayloadPart5 p = new PayloadPart5();
-								p.setPayloadType(PayloadTypePart5.DISCONNECT);
+								PayloadMilestone1 p = new PayloadMilestone1();
+								p.setPayloadType(PayloadTypeMilestone1.DISCONNECT);
 								p.setMessage("bye");
 								out.writeObject(p);
 								break;
@@ -91,9 +91,9 @@ public class SampleSocketClientPart5 {
 				@Override
 				public void run() {
 					try {
-						PayloadPart5 fromServer;
+						PayloadMilestone1 fromServer;
 						//while we're connected, listen for payloads from server
-						while(!server.isClosed() && (fromServer = (PayloadPart5)in.readObject()) != null) {
+						while(!server.isClosed() && (fromServer = (PayloadMilestone1)in.readObject()) != null) {
 							//System.out.println(fromServer);
 							processPayload(fromServer);
 						}
@@ -132,7 +132,7 @@ public class SampleSocketClientPart5 {
 			close();
 		}
 	}
-	private void processPayload(PayloadPart5 payload) {
+	private void processPayload(PayloadMilestone1 payload) {
 		System.out.println(payload);
 		switch(payload.getPayloadType()) {
 		case CONNECT:
@@ -166,7 +166,7 @@ public class SampleSocketClientPart5 {
 		}
 	}
 	public static void main(String[] args) {
-		SampleSocketClientPart5 client = new SampleSocketClientPart5();
+		ClientsMilestone1 client = new ClientsMilestone1();
 		client.connect("127.0.0.1", 3002);
 		try {
 			//if start is private, it's valid here since this main is part of the class

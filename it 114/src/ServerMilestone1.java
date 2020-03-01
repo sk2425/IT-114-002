@@ -12,10 +12,10 @@ import java.util.Queue;
 import com.google.gson.Gson;
 
 
-public class SampleSocketServerPart5 {
+public class ServerMilestone1 {
 	int port = 3002;
 	public static boolean isRunning = true;
-	private List<ServerThreadPart5> clients = new ArrayList<ServerThreadPart5>();
+	private List<ServerThreadMilestone1> clients = new ArrayList<ServerThreadMilestone1>();
 	//We'll use a queue and a thread to separate our chat history
 	Queue<String> messages = new LinkedList<String>();
 	private void start(int port) {
@@ -26,12 +26,12 @@ public class SampleSocketServerPart5 {
 		saveScore(1000);
 		System.out.println("Waiting for client");
 		try (ServerSocket serverSocket = new ServerSocket(port);) {
-			while(SampleSocketServerPart5.isRunning) {
+			while(ServerMilestone1.isRunning) {
 				try {
 					Socket client = serverSocket.accept();
 					System.out.println("Client connecting...");
 					//Server thread is the server's representation of the client
-					ServerThreadPart5 thread = new ServerThreadPart5(client, this);
+					ServerThreadMilestone1 thread = new ServerThreadMilestone1(client, this);
 					thread.start();
 					//add client thread to list of clients
 					clients.add(thread);
@@ -120,7 +120,7 @@ public class SampleSocketServerPart5 {
 		}
 		return -1;
 	}
-	public synchronized void broadcast(PayloadPart5 payload, String name) {
+	public synchronized void broadcast(PayloadMilestone1 payload, String name) {
 		String msg = payload.getMessage();
 		payload.setMessage(
 				//prepending client name to front of message
@@ -130,13 +130,13 @@ public class SampleSocketServerPart5 {
 		);
 		broadcast(payload);
 	}
-	public synchronized void broadcast(PayloadPart5 payload) {
+	public synchronized void broadcast(PayloadMilestone1 payload) {
 		System.out.println("Sending message to " + clients.size() + " clients");
 		//TODO record message
 		storeInFile(payload.getMessage());
-		Iterator<ServerThreadPart5> iter = clients.iterator();
+		Iterator<ServerThreadMilestone1> iter = clients.iterator();
 		while(iter.hasNext()) {
-			ServerThreadPart5 client = iter.next();
+			ServerThreadMilestone1 client = iter.next();
 			boolean messageSent = client.send(payload);
 			if(!messageSent) {
 				//if we got false, due to update of send()
@@ -148,7 +148,7 @@ public class SampleSocketServerPart5 {
 		}
 	}
 	//Broadcast given payload to everyone connected
-	public synchronized void broadcast(PayloadPart5 payload, long id) {
+	public synchronized void broadcast(PayloadMilestone1 payload, long id) {
 		//let's temporarily use the index as the client identifier to
 		//show in all client's chat. You'll see why this is a bad idea
 		//when clients disconnect/reconnect.
@@ -167,8 +167,8 @@ public class SampleSocketServerPart5 {
 	}
 	//Broadcast given message to everyone connected
 	public synchronized void broadcast(String message, long id) {
-		PayloadPart5 payload = new PayloadPart5();
-		payload.setPayloadType(PayloadTypePart5.MESSAGE);
+		PayloadMilestone1 payload = new PayloadMilestone1();
+		payload.setPayloadType(PayloadTypeMilestone1.MESSAGE);
 		payload.setMessage(message);
 		broadcast(payload, id);
 	}
@@ -193,7 +193,7 @@ public class SampleSocketServerPart5 {
 			}
 		}
 		System.out.println("Starting Server");
-		SampleSocketServerPart5 server = new SampleSocketServerPart5();
+		ServerMilestone1 server = new ServerMilestone1();
 		System.out.println("Listening on port " + port);
 		server.start(port);
 		System.out.println("Server Stopped");
